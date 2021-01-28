@@ -14,12 +14,6 @@ class Audio: RCTViewManager {
     return AudioView()
   }
   
-  var fileName: String = "audiofile.m4a"
-  
-  @objc func onStopRecoding(_ callback: RCTResponseSenderBlock) {
-    callback([NSNull(), [ "file": fileName]])
-  }
-  
   override static func requiresMainQueueSetup() -> Bool {
     return true
   }

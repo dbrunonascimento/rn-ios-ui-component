@@ -8,7 +8,14 @@
 import Foundation
 import AVFoundation
 
-class AudioView: UIView, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
+@objc(AudioView)
+class AudioView: UIView, RCTBridgeModule, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
+  
+  static func moduleName() -> String! {
+      return "AudioM"
+  }
+  
+ 
   
   var recordBtn: UIButton! = UIButton()
   var playBtn: UIButton! = UIButton()
@@ -18,14 +25,13 @@ class AudioView: UIView, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
   
   var fileName: String = "audiofile.m4a"
   
-  
-//  var fileName: String = "audiofile.m4a"
-  
+  @objc func onFinishCallback(_ callback: RCTResponseSenderBlock) {
+      callback([NSNull(), [ "file": fileName]])
+  }
+    
   override init(frame: CGRect) {
     super.init(frame: frame)
-      
-    print("inittt")
-  
+    
     setupView()
     setupRecorder()
     playBtn.isEnabled = false
@@ -94,6 +100,12 @@ class AudioView: UIView, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
   
   func setupPlayer() {
       let audioFilename = getDocumentsDirectory().appendingPathComponent(fileName)
+      
+
+      // Emissao de eventos a partir do swift 
+      let a = AudioEventEmitter()
+         a.notifiyRN("onStop", parameters: ["file": audioFilename])
+            
       do {
           soundPlayer = try AVAudioPlayer(contentsOf: audioFilename)
           soundPlayer.delegate = self
@@ -108,13 +120,10 @@ class AudioView: UIView, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
   
   @IBAction func recordAction(_ sender: UIButton){
     if recordBtn.titleLabel?.text == "Record" {
-        print("Record")
-      
         soundRecorder.record()
         recordBtn.setTitle("Stop", for: .normal)
         playBtn.isEnabled = false
     } else {
-        print("stop")
         soundRecorder.stop()
         recordBtn.setTitle("Record", for: .normal)
         playBtn.isEnabled = true
@@ -124,13 +133,11 @@ class AudioView: UIView, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
   @IBAction func playAction(_ sender: UIButton) {
         
       if playBtn.titleLabel?.text == "Play" {
-          print("play")
           playBtn.setTitle("Stop", for: .normal)
           recordBtn.isEnabled = false
           setupPlayer()
           soundPlayer.play()
       } else {
-          print("stop playing")
           playBtn.setTitle("Play", for: .normal)
           soundPlayer.stop()
           recordBtn.isEnabled = true
