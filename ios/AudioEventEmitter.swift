@@ -42,7 +42,8 @@ class AudioEventEmitter: RCTEventEmitter {
   
   @objc func emitEventInternal(_ notification: NSNotification)  {
       let eventName: String = notification.userInfo?["eventName"] as! String
-      print("send event to RN: \(self.bridge) \(eventName) \(notification.userInfo)")
+//      print("send event to RN: \(self.bridge) \(eventName) \(notification.userInfo)")
+//      self.sendEvent(withName: "onStop", body: ["file": "===========file2========="])
       self.sendEvent(withName: eventName, body: notification.userInfo)
   }
 

@@ -102,9 +102,11 @@ class AudioView: UIView, RCTBridgeModule, AVAudioRecorderDelegate, AVAudioPlayer
       let audioFilename = getDocumentsDirectory().appendingPathComponent(fileName)
       
 
-      // Emissao de eventos a partir do swift 
+      // Emissao de eventos a partir do swift
+      
+      
       let a = AudioEventEmitter()
-         a.notifiyRN("onStop", parameters: ["file": audioFilename])
+          a.notifiyRN("onStop", parameters: ["file": audioFilename.path])
             
       do {
           soundPlayer = try AVAudioPlayer(contentsOf: audioFilename)
